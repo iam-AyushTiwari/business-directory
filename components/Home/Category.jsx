@@ -7,7 +7,7 @@ import { FlatList } from "react-native";
 import CategoryItem from "../../components/Home/CategoryItem";
 import { useRouter } from "expo-router";
 
-const Category = () => {
+const Category = ({ explore = false, onCategorySelect }) => {
   const [categoryList, setCategoryList] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -30,38 +30,48 @@ const Category = () => {
     setLoading(false);
   };
 
+  const onCategoryPressHandler = (item) => {
+    if (!explore) {
+      return router.push("/businesslist/" + item.name);
+    } else {
+      onCategorySelect(item.name);
+    }
+  };
+
   return (
     <View>
-      <View
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginTop: 10,
-        }}
-      >
-        <Text
+      {!explore && (
+        <View
           style={{
-            fontFamily: "outfit-bold",
-            paddingLeft: 20,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
             marginTop: 10,
-            fontSize: 20,
-            marginBottom: 5,
           }}
         >
-          Category
-        </Text>
-        <Text
-          style={{
-            paddingRight: 20,
-            color: Colors.PRIMARY,
-            fontFamily: "outfit-medium",
-          }}
-        >
-          View All
-        </Text>
-      </View>
+          <Text
+            style={{
+              fontFamily: "outfit-bold",
+              paddingLeft: 20,
+              marginTop: 10,
+              fontSize: 20,
+              marginBottom: 5,
+            }}
+          >
+            Category
+          </Text>
+          <Text
+            style={{
+              paddingRight: 20,
+              color: Colors.PRIMARY,
+              fontFamily: "outfit-medium",
+            }}
+          >
+            View All
+          </Text>
+        </View>
+      )}
       {loading ? (
         <View
           style={{
@@ -82,9 +92,7 @@ const Category = () => {
           renderItem={({ item, index }) => (
             <CategoryItem
               category={item}
-              onCategoryPress={(category) =>
-                router.push("/businesslist/" + item.name)
-              }
+              onCategoryPress={(category) => onCategoryPressHandler(item)}
             />
           )}
         />

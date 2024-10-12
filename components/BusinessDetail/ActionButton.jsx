@@ -1,4 +1,11 @@
-import { View, Text, Image, TouchableOpacity, Linking } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  Linking,
+  Share,
+} from "react-native";
 import React from "react";
 import { FlatList } from "react-native";
 
@@ -33,6 +40,13 @@ const ActionButton = ({ business }) => {
 
   const OnPressHandler = (item) => {
     if (item.name == "Share") {
+      Share.share({
+        message:
+          business?.name +
+          "\n\n Address: " +
+          business?.address +
+          "\n\nFind more details on business directory application by Ayush Tiwari!",
+      });
       return;
     }
     Linking.openURL(item.url);

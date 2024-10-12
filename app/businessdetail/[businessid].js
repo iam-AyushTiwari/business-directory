@@ -12,7 +12,7 @@ import Reviews from "../../components/BusinessDetail/Reviews";
 
 const BusinessDetail = () => {
   const { businessid } = useLocalSearchParams();
-
+  // console.log("first");
   const [businessDetail, setBusinessDetail] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -26,8 +26,7 @@ const BusinessDetail = () => {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      console.log("Document Found", docSnap.data());
-      setBusinessDetail(docSnap.data());
+      setBusinessDetail({ id: docSnap.id, ...docSnap.data() });
     } else {
       console.log("Not found the Business Details");
     }
