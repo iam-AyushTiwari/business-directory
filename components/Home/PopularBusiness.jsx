@@ -16,7 +16,7 @@ const PopularBusiness = () => {
 
   const getBusinessList = async () => {
     setBusinessList([]);
-    const q = query(collection(db, "BusinessList"), limit(5));
+    const q = query(collection(db, "BusinessList"), limit(3));
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {

@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Colors } from "@/constants/Colors";
 import { collection, getDocs, query } from "firebase/firestore";
@@ -25,14 +25,13 @@ const Category = ({ explore = false, onCategorySelect }) => {
 
     querySnapshot.forEach((doc) => {
       setCategoryList((prev) => [...prev, doc.data()]);
-      console.log("fdss", doc.data());
     });
     setLoading(false);
   };
 
   const onCategoryPressHandler = (item) => {
     if (!explore) {
-      return router.push("/businesslist/" + item.name);
+      return router.navigate("/businesslist/" + item.name);
     } else {
       onCategorySelect(item.name);
     }
@@ -81,7 +80,7 @@ const Category = ({ explore = false, onCategorySelect }) => {
             padding: 10,
           }}
         >
-          <Text style>Loading..</Text>
+          <ActivityIndicator size={"55"} color={Colors.PRIMARY} />
         </View>
       ) : (
         <FlatList
