@@ -26,6 +26,7 @@ const AddBusiness = () => {
   const [about, setAbout] = useState();
   const [category, setCategory] = useState();
   const [loading, setLoading] = useState(false);
+  const [allFilled, setAllFilled] = useState(false);
 
   const setAllStatesToEmpty = () => {
     setImage(null);
@@ -277,12 +278,29 @@ const AddBusiness = () => {
         />
       </View>
       <TouchableOpacity
-        disabled={loading}
+        disabled={
+          loading ||
+          !name ||
+          !address ||
+          !contact ||
+          !about ||
+          !category ||
+          !image
+        }
         onPress={onAddNewBusiness}
         style={{
           width: "100%",
           padding: 15,
-          backgroundColor: Colors.PRIMARY,
+          backgroundColor:
+            loading ||
+            !name ||
+            !address ||
+            !contact ||
+            !about ||
+            !category ||
+            !image
+              ? "#7f57f1c2"
+              : Colors.PRIMARY,
           borderRadius: 10,
           marginTop: 10,
         }}

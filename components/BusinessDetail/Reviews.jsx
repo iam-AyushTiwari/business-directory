@@ -10,11 +10,24 @@ import { ActivityIndicator } from "react-native";
 import { FlatList } from "react-native-web";
 
 const Reviews = ({ business }) => {
-  const [rating, setRating] = useState();
+  const [rating, setRating] = useState(3);
   const [userInput, setUserInput] = useState();
+
+  const [reviewData, setReviewData] = useState(
+    business?.reviews?.map((item) => ({
+      comment: item.comment,
+      rating: item.rating,
+      userImage: item.userImage,
+      userName: item.userName,
+    }))
+  );
+
+  const [loading, setLoading] = useState(false);
+
   const { user } = useUser();
 
   const onSubmit = async () => {
+    setLoading(true);
     const docRef = doc(db, "BusinessList", business?.id);
     await updateDoc(docRef, {
       reviews: arrayUnion({
@@ -24,6 +37,18 @@ const Reviews = ({ business }) => {
         userImage: user?.imageUrl,
       }),
     });
+
+    setReviewData((prev) => [
+      ...prev,
+      {
+        rating: rating,
+        comment: userInput,
+        userName: user?.fullName,
+        userImage: user?.imageUrl,
+      },
+    ]);
+
+    setLoading(false);
 
     ToastAndroid.show("Comment added successfully !", ToastAndroid.BOTTOM);
   };
@@ -47,6 +72,7 @@ const Reviews = ({ business }) => {
         <Rating
           showRating={false}
           imageSize={25}
+          onStartRating={(rating) => setRating(rating)}
           onFinishRating={(rating) => setRating(rating)}
           style={{
             paddingVertical: 10,
@@ -65,32 +91,55 @@ const Reviews = ({ business }) => {
             textAlignVertical: "top",
           }}
         />
-        <TouchableOpacity
-          disabled={!userInput}
-          onPress={() => onSubmit()}
-          style={{
-            borderRadius: 6,
-            backgroundColor: Colors.PRIMARY,
-            padding: 10,
-            alignItems: "center",
-            marginTop: 10,
-          }}
-        >
-          <Text
+        {loading ? (
+          <TouchableOpacity
+            disabled={!userInput}
+            onPress={() => onSubmit()}
             style={{
-              fontFamily: "outfit",
-              color: "#fff",
+              borderRadius: 6,
+              backgroundColor: Colors.PRIMARY,
+              padding: 10,
+              alignItems: "center",
+              marginTop: 10,
             }}
           >
-            Submit
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                fontFamily: "outfit",
+                color: "#fff",
+              }}
+            >
+              <ActivityIndicator color={"white"} />
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            disabled={!userInput && !rating}
+            onPress={() => onSubmit()}
+            style={{
+              borderRadius: 6,
+              backgroundColor: Colors.PRIMARY,
+              padding: 10,
+              alignItems: "center",
+              marginTop: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "outfit",
+                color: "#fff",
+              }}
+            >
+              Submit
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* display previous review  */}
 
       <View>
-        {business?.reviews?.map((item, index) => (
+        {reviewData?.map((item, index) => (
           <View
             key={index}
             style={{
